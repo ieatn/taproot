@@ -7,19 +7,21 @@
   width: var(--chatbot-fab-size, 56px);
   height: var(--chatbot-fab-size, 56px);
   border-radius: 999px;
-  border: var(--chatbot-fab-border-width, 2px) solid var(--chatbot-fab-outline, transparent);
+  border: var(--chatbot-fab-border-width, 0px) solid var(--chatbot-fab-outline, transparent);
   cursor: pointer;
   display: grid;
   place-items: center;
   background: var(--chatbot-fab-bg, var(--chatbot-accent, #333));
-  color: var(--chatbot-on-accent, #fff);
+  /* Icon stroke uses currentColor — separate from --chatbot-on-accent (used by send buttons). */
+  color: var(--chatbot-fab-color, #fff);
   box-shadow: var(--chatbot-fab-shadow, var(--chatbot-shadow, 0 16px 40px rgba(0, 0, 0, 0.2)));
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 .site-chatbot-fab:hover {
   transform: translateY(-2px);
   background: var(--chatbot-fab-bg-hover, var(--chatbot-accent-hover, var(--chatbot-accent, #333)));
+  color: var(--chatbot-fab-color-hover, var(--chatbot-fab-color, #fff));
 }
 
 .site-chatbot-fab:focus-visible {
@@ -52,6 +54,8 @@
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);
+  overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 .site-chatbot-head {
@@ -112,6 +116,7 @@
   max-height: 360px;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   padding: 0.85rem max(0.85rem, env(safe-area-inset-left)) 0.85rem
     max(0.85rem, env(safe-area-inset-right));
@@ -273,6 +278,7 @@
     transform: none;
     border: none;
     box-shadow: none;
+    overscroll-behavior: none;
   }
 
   .site-chatbot-msgs {
@@ -296,7 +302,8 @@
   }
 }
 
-body.site-chatbot-scroll-lock {
-  overflow: hidden;
-  overscroll-behavior: none;
+/* Scroll lock: class added on <html>; body position:fixed is applied in JS for iOS Safari. */
+html.site-chatbot-scroll-lock {
+  overflow: hidden !important;
+  height: 100%;
 }

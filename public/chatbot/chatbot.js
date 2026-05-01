@@ -105,9 +105,39 @@ function mount() {
   document.body.appendChild(panel);
 
   let open = false;
+  let scrollLockActive = false;
+  let savedScrollY = 0;
 
   function mobileSheetMq() {
     return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 639px)').matches;
+  }
+
+  function applyMobileScrollLock() {
+    if (scrollLockActive || !mobileSheetMq()) return;
+    scrollLockActive = true;
+    savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add('site-chatbot-scroll-lock');
+    Object.assign(document.body.style, {
+      position: 'fixed',
+      top: `-${savedScrollY}px`,
+      left: '0',
+      right: '0',
+      width: '100%',
+      overflow: 'hidden',
+    });
+  }
+
+  function releaseMobileScrollLock() {
+    if (!scrollLockActive) return;
+    scrollLockActive = false;
+    document.documentElement.classList.remove('site-chatbot-scroll-lock');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, savedScrollY);
   }
 
   function setOpen(v) {
@@ -116,10 +146,18 @@ function mount() {
     fab.style.visibility = open ? 'hidden' : 'visible';
     fab.setAttribute('aria-expanded', open ? 'true' : 'false');
     panel.setAttribute('aria-modal', open ? 'true' : 'false');
-    document.body.classList.toggle('site-chatbot-scroll-lock', open && mobileSheetMq());
+
     if (open) {
-      input.focus();
+      if (mobileSheetMq()) {
+        applyMobileScrollLock();
+        input.blur();
+      } else {
+        releaseMobileScrollLock();
+        input.focus();
+      }
     } else {
+      releaseMobileScrollLock();
+      input.blur();
       fab.focus();
     }
   }
@@ -129,10 +167,15 @@ function mount() {
 
   window.addEventListener('resize', () => {
     if (!open) {
-      document.body.classList.remove('site-chatbot-scroll-lock');
+      releaseMobileScrollLock();
       return;
     }
-    document.body.classList.toggle('site-chatbot-scroll-lock', mobileSheetMq());
+    if (mobileSheetMq()) {
+      applyMobileScrollLock();
+    } else {
+      releaseMobileScrollLock();
+      input.focus();
+    }
   });
 
   document.addEventListener('keydown', (e) => {
@@ -192,7 +235,11 @@ function mount() {
       busy = false;
       send.disabled = false;
       input.disabled = false;
-      input.focus();
+      if (!mobileSheetMq()) {
+        input.focus();
+      } else {
+        input.blur();
+      }
     }
   }
 
