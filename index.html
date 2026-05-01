@@ -406,9 +406,11 @@
       gap: 0;
       flex-wrap: wrap;
       overflow-x: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       overscroll-behavior-x: contain;
+      overscroll-behavior-y: contain;
       box-shadow: none;
     }
     .menu-tabs::-webkit-scrollbar { display: none; height: 0; }
@@ -428,8 +430,6 @@
       border-left: none;
       border-right: none;
       border-top: none;
-      scroll-snap-align: start;
-      scroll-snap-stop: normal;
       -webkit-tap-highlight-color: transparent;
     }
     .menu-tab:hover { color: var(--color-text); }
@@ -976,35 +976,20 @@
       /* Symmetrical finish: full-width cap so the last image is not a lone half tile */
       .gallery-item:nth-child(8) { grid-column: 1 / -1; }
       .hh-grid { grid-template-columns: 1fr; }
+      /* Full-bleed tab bar: more horizontal room so the next/prev category stays visibly clipped (peek), not hidden under a gradient */
+      .menu .menu-tabs-wrap {
+        width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+      }
       .menu-tabs {
         flex-wrap: nowrap;
-        scroll-snap-type: x mandatory;
-        scroll-padding-inline: max(0px, env(safe-area-inset-left)) max(0px, env(safe-area-inset-right));
-        box-shadow: inset 0 -6px 8px -8px rgba(0, 0, 0, 0.08);
+        touch-action: pan-x pinch-zoom;
+        scroll-padding-inline: max(1.25rem, env(safe-area-inset-left)) max(1.25rem, env(safe-area-inset-right));
+        padding-inline: max(1.25rem, env(safe-area-inset-left)) max(1.25rem, env(safe-area-inset-right));
+        box-shadow: inset 0 -6px 8px -8px rgba(0, 0, 0, 0.06);
       }
-      .menu-tabs-wrap::before,
-      .menu-tabs-wrap::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 2.25rem;
-        max-width: 18%;
-        pointer-events: none;
-        z-index: 1;
-        opacity: 0;
-        transition: opacity 0.22s ease;
-      }
-      .menu-tabs-wrap::before {
-        left: 0;
-        background: linear-gradient(to right, var(--color-surface) 0%, rgba(255, 255, 255, 0) 100%);
-      }
-      .menu-tabs-wrap::after {
-        right: 0;
-        background: linear-gradient(to left, var(--color-surface) 0%, rgba(255, 255, 255, 0) 100%);
-      }
-      .menu-tabs-wrap.menu-tabs-wrap--fade-left::before { opacity: 1; }
-      .menu-tabs-wrap.menu-tabs-wrap--fade-right::after { opacity: 1; }
     }
     @media (max-width: 768px) {
       html { scroll-padding-top: 76px; }
@@ -1188,7 +1173,7 @@
     <p style="color:var(--color-muted);margin-bottom:2.5rem;font-size:0.95rem;max-width:600px;">Our menu changes with the seasons. What follows reflects our current offerings — ask your server about today's specials.</p>
 
     <div class="menu-tabs-wrap" id="menuTabsWrap">
-      <div class="menu-tabs" id="menuTabs" role="tablist" aria-label="Menu categories" title="Scroll sideways to see every category">
+      <div class="menu-tabs" id="menuTabs" role="tablist" aria-label="Menu categories">
         <button type="button" class="menu-tab active" onclick="switchTab('lunch', this)">Lunch</button>
         <button type="button" class="menu-tab" onclick="switchTab('dinner', this)">Dinner Entrees</button>
         <button type="button" class="menu-tab" onclick="switchTab('cocktails', this)">Cocktails</button>
@@ -1892,32 +1877,6 @@
       btn.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
     }
   }
-
-  (function initMenuTabsScrollFades() {
-    const wrap = document.getElementById('menuTabsWrap');
-    const row = document.getElementById('menuTabs');
-    if (!wrap || !row) return;
-    const mq = window.matchMedia('(max-width: 900px)');
-    function updateMenuTabFades() {
-      if (!mq.matches) {
-        wrap.classList.remove('menu-tabs-wrap--fade-left', 'menu-tabs-wrap--fade-right');
-        return;
-      }
-      const maxScroll = row.scrollWidth - row.clientWidth;
-      const eps = 2;
-      if (maxScroll <= eps) {
-        wrap.classList.remove('menu-tabs-wrap--fade-left', 'menu-tabs-wrap--fade-right');
-        return;
-      }
-      wrap.classList.toggle('menu-tabs-wrap--fade-left', row.scrollLeft > eps);
-      wrap.classList.toggle('menu-tabs-wrap--fade-right', row.scrollLeft < maxScroll - eps);
-    }
-    row.addEventListener('scroll', updateMenuTabFades, { passive: true });
-    window.addEventListener('resize', updateMenuTabFades);
-    mq.addEventListener('change', updateMenuTabFades);
-    if (typeof ResizeObserver !== 'undefined') new ResizeObserver(updateMenuTabFades).observe(row);
-    updateMenuTabFades();
-  })();
 
   // Lightbox
   const galleryPhotos = [
