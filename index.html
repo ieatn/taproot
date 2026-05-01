@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Taproot Café & Bar — Columbia City, Seattle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg:       #0c0c0c;
+      --color-surface:  #ffffff;
+      --color-surface2: #f7f4f0;
+      --color-primary:  #8b1a1a;
+      --color-accent:   #c0392b;
+      --color-gold:     #b5924c;
+      --color-text:     #1a1a1a;
+      --color-muted:    #666666;
+      --color-border:   #e0dbd3;
+      --color-nav:      #0c0c0c;
+      --font-display:   'Playfair Display', Georgia, serif;
+      --font-body:      'Inter', sans-serif;
+      --font-label:     'Oswald', sans-serif;
+      --transition:     0.3s cubic-bezier(0.4,0,0.2,1);
+      --shadow-sm:      0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:      0 8px 32px rgba(0,0,0,0.12);
+      --shadow-lg:      0 20px 60px rgba(0,0,0,0.18);
+      --max-w:          1200px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      scroll-padding-top: 88px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-surface);
+      overflow-x: hidden;
+    }
+    html.menu-open,
+    body.menu-open { overflow: hidden; }
+
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: var(--color-nav);
+      border-bottom: 1px solid rgba(139,26,26,0.3);
+      transition: var(--transition);
+    }
+    .nav.scrolled {
+      background: rgba(12,12,12,0.97);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 max(1.25rem, env(safe-area-inset-right)) 0 max(1.25rem, env(safe-area-inset-left));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      gap: 0.75rem;
+    }
+    .nav-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .nav-logo-name {
+      font-family: var(--font-label);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    .nav-logo-sub {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--color-gold);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .nav-links a {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--color-gold); }
+    .nav-cta {
+      background: var(--color-primary);
+      color: #fff !important;
+      padding: 0.5rem 1.25rem;
+      border-radius: 2px;
+      letter-spacing: 0.12em;
+      transition: background var(--transition) !important;
+    }
+    .nav-cta:hover { background: var(--color-accent) !important; color: #fff !important; }
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 12px;
+      margin-right: max(0px, calc(-1 * env(safe-area-inset-right, 0px)));
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      background: none;
+      border: none;
+      font: inherit;
+      color: inherit;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      transition: transform var(--transition), opacity 0.2s ease;
+      transform-origin: center;
+    }
+    html.menu-open .nav-hamburger span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    html.menu-open .nav-hamburger span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    html.menu-open .nav-hamburger span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--color-bg);
+      padding-top: 72px;
+      padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+      box-sizing: border-box;
+    }
+    .hero-slides {
+      position: absolute;
+      inset: 0;
+    }
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(12,12,12,0.35) 0%,
+        rgba(12,12,12,0.5) 50%,
+        rgba(12,12,12,0.75) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      padding: 0 max(1rem, env(safe-area-inset-left)) 0 max(1rem, env(safe-area-inset-right));
+      max-width: 800px;
+      width: 100%;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--color-gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      font-weight: 700;
+      line-height: 0.95;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--color-gold);
+    }
+    .hero-tagline {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      color: rgba(255,255,255,0.85);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      transition: all var(--transition);
+      border: 1px solid var(--color-primary);
+    }
+    .btn-primary:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.2rem;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.5);
+      transition: all var(--transition);
+    }
+    .btn-outline:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    .hero-scroll span {
+      font-family: var(--font-label);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    /* ── SECTION SHARED ── */
+    .section {
+      padding: 100px max(1.25rem, env(safe-area-inset-right)) 100px max(1.25rem, env(safe-area-inset-left));
+    }
+    .section-inner { max-width: var(--max-w); margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-label);
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;      color: var(--color-primary);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--color-text);
+      margin-bottom: 1.5rem;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--color-primary);
+    }
+    .section-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(to right, var(--color-primary), transparent);
+      margin-bottom: 2rem;
+    }
+
+    /* ── ABOUT ── */
+    .about { background: var(--color-surface2); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-main {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+    .about-img-accent {
+      position: absolute;
+      bottom: -32px;
+      right: -32px;
+      width: 200px;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 2px;
+      border: 6px solid var(--color-surface2);
+      box-shadow: var(--shadow-lg);
+    }
+    .about-text p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 1.25rem;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      letter-spacing: 0.08em;
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+    }
+
+    /* ── MENU ── */
+    .menu { background: var(--color-surface); }
+    .menu-tabs-wrap {
+      position: relative;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .menu-tabs {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      overscroll-behavior-x: contain;
+      box-shadow: none;
+    }
+    .menu-tabs::-webkit-scrollbar { display: none; height: 0; }
+    .menu-tab {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 1rem 1.5rem;
+      flex: 0 0 auto;
+      cursor: pointer;
+      color: var(--color-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all var(--transition);
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .menu-tab:hover { color: var(--color-text); }
+    .menu-tab.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+    .menu-panel { display: none; }
+    .menu-panel.active { display: block; }
+    .menu-section { margin-bottom: 3.5rem; }
+    .menu-section-title {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 2.5rem;
+      row-gap: 0;
+    }
+    .menu-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 0.85rem;
+      align-items: start;
+      padding: 1.1rem 0.35rem;
+      border-bottom: 1px solid rgba(224,219,211,0.5);
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item-info {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      min-width: 0;
+    }
+    .menu-item-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 0.2rem;
+    }
+    .menu-item-desc {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+    }
+    .menu-item-price {
+      grid-column: 2;
+      grid-row: 1;
+      font-family: var(--font-label);
+      font-size: 0.9rem;
+      color: var(--color-primary);
+      white-space: nowrap;
+      font-weight: 500;
+      padding-inline-end: 0.2rem;
+      line-height: 1.35;
+    }
+    .menu-note {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      font-style: italic;
+    }
+
+    /* ── GALLERY ── */
+    .gallery {
+      background: var(--color-bg);
+      padding: 100px max(1.25rem, env(safe-area-inset-right)) 100px max(1.25rem, env(safe-area-inset-left));
+    }
+    .gallery .section-title { color: #fff; }
+    .gallery .section-label { color: var(--color-gold); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto;
+      gap: 8px;
+      margin-top: 3rem;
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      min-height: 200px;
+    }
+    .gallery-item:hover img { transform: scale(1.05); }
+    .gallery-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(12,12,12,0);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-item:hover .gallery-item-overlay {
+      background: rgba(12,12,12,0.35);
+    }
+    .gallery-icon {
+      opacity: 0;
+      color: #fff;
+      font-size: 1.5rem;
+      transition: var(--transition);
+    }
+    .gallery-item:hover .gallery-icon { opacity: 1; }
+    @media (hover: none) {
+      .gallery-item-overlay { background: rgba(12,12,12,0.25); }
+      .gallery-icon { opacity: 0.65; }
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: max(0.75rem, env(safe-area-inset-top));
+      right: max(0.75rem, env(safe-area-inset-right));
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity var(--transition);
+      padding: 0.75rem;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 1.75rem;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity var(--transition);
+      padding: min(1rem, 3vw);
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .lightbox-nav:hover { opacity: 1; }
+    .lightbox-prev { left: max(0.25rem, env(safe-area-inset-left)); }
+    .lightbox-next { right: max(0.25rem, env(safe-area-inset-right)); }
+
+    /* ── HAPPY HOUR ── */
+    .happy-hour {
+      background: var(--color-primary);
+      padding: 80px max(1.25rem, env(safe-area-inset-right)) 80px max(1.25rem, env(safe-area-inset-left));
+      text-align: center;
+      min-width: 0;
+    }
+    .happy-hour .section-label {
+      color: rgba(255,255,255,0.6);
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+    .happy-hour .section-title {
+      color: #fff;
+      overflow: visible;
+      overflow-wrap: anywhere;
+    }
+    .happy-hour .section-title em {
+      color: var(--color-gold);
+    }
+    .happy-hour .section-divider { background: linear-gradient(to right, rgba(255,255,255,0.5), transparent); margin: 0 auto 2rem; }
+    .hh-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      margin-top: 3rem;
+      max-width: 920px;
+      width: 100%;
+      min-width: 0;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    .hh-card {
+      background: rgba(247,244,240,0.04);
+      border: 1px solid rgba(181,146,76,0.28);
+      border-radius: 2px;
+      padding: 0.25rem 1.35rem 1.5rem;
+      min-width: 0;
+      overflow-wrap: break-word;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    /* Same voice as .menu-section-title — caps label + rule */
+    .hh-card-title {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin: 0 0 1.25rem;
+      padding: 1.1rem 0 0.8rem;
+      border-bottom: 1px solid rgba(224,219,211,0.35);
+    }
+    .hh-card-lead {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.55;
+      margin: 0 0 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .hh-card-sub {
+      font-family: var(--font-label);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin: 0 0 0.35rem;
+    }
+    /* Menu-style rows: Playfair names + hairline dividers (global ul resets markers) */
+    .hh-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .hh-list li {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.35;
+      padding: 0.65rem 0.15rem 0.65rem 0;
+      border-bottom: 1px solid rgba(224,219,211,0.2);
+    }
+    .hh-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0.15rem;
+    }
+    .hh-card-text {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.75;
+      margin: 0;
+      padding: 0.35rem 0.15rem 0 0;
+    }
+    .hh-time {
+      display: block;
+      box-sizing: border-box;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 2rem;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.5rem 1rem;
+      border-radius: 2px;
+      text-align: center;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+
+    /* ── LOCATION & HOURS ── */
+    .location { background: var(--color-surface2); }
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .hours-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    .hours-table tr { border-bottom: 1px solid var(--color-border); }
+    .hours-table td {
+      padding: 0.85rem 0;
+      font-size: 0.9rem;
+    }
+    .hours-table td:first-child { color: var(--color-text); font-weight: 500; }
+    .hours-table td:last-child { color: var(--color-muted); text-align: right; }
+    .hours-table .closed { color: var(--color-primary); }
+    .location-map {
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin-top: 1.5rem;
+    }
+    .location-map iframe { width: 100%; height: 320px; border: none; }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.95rem;
+      color: #444;
+    }
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .reserve-cta {
+      margin-top: 2.5rem;
+      padding: 2rem;
+      background: var(--color-bg);
+      border-radius: 2px;
+      text-align: center;
+    }
+    .reserve-cta p {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      font-style: italic;
+    }
+    .reserve-cta a {
+      display: inline-block;
+      background: var(--color-primary);
+      color: #fff;
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.8rem 2rem;
+      border-radius: 2px;
+      transition: background var(--transition);
+    }
+    .reserve-cta a:hover { background: var(--color-accent); }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--color-bg);
+      padding: 60px max(1.25rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+      color: rgba(255,255,255,0.6);
+    }
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 2rem;
+    }
+    .footer-brand-name {
+      font-family: var(--font-label);
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .footer-brand-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--color-gold);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .footer-brand-desc {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      max-width: 280px;
+    }
+    .footer-social {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    .footer-social a {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      transition: all var(--transition);
+    }
+    .footer-social a:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+      background: rgba(181,146,76,0.1);
+    }
+    .footer-col-title {
+      font-family: var(--font-label);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 1.25rem;
+    }
+    .footer-links li { margin-bottom: 0.6rem; }
+    .footer-links a {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--color-gold); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-bottom a { color: rgba(255,255,255,0.4); transition: color var(--transition); }
+    .footer-bottom a:hover { color: var(--color-gold); }
+
+    /* ── MOBILE NAV ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: var(--color-bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: max(5rem, calc(env(safe-area-inset-top) + 4rem)) 1.5rem max(2rem, env(safe-area-inset-bottom));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-label);
+      font-size: clamp(0.95rem, 4vw, 1.15rem);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      transition: color var(--transition);
+      padding: 0.85rem 1.25rem;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-menu a:hover,
+    .mobile-menu a:active { color: var(--color-gold); }
+    .mobile-menu-cta {
+      background: var(--color-primary);
+      color: #fff !important;
+      border-radius: 2px;
+      letter-spacing: 0.12em;
+      margin-top: 0.5rem;
+    }
+    .mobile-menu-cta:hover,
+    .mobile-menu-cta:active { color: #fff !important; filter: brightness(1.08); }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width: 901px) {
+      /* Gallery: symmetric mosaic — large left, paired rows, balanced two-wide bottom */
+      .gallery-item:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 3; }
+      .gallery-item:nth-child(2) { grid-column: 3; grid-row: 1; }
+      .gallery-item:nth-child(3) { grid-column: 4; grid-row: 1; }
+      .gallery-item:nth-child(4) { grid-column: 3 / 5; grid-row: 2; }
+      .gallery-item:nth-child(5) { grid-column: 1 / 3; grid-row: 3; }
+      .gallery-item:nth-child(6) { grid-column: 3 / 5; grid-row: 3; }
+      .gallery-item:nth-child(7) { grid-column: 1 / 3; grid-row: 4; }
+      .gallery-item:nth-child(8) { grid-column: 3 / 5; grid-row: 4; }
+      .nav-inner {
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
+      }
+      .section {
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
+      }
+      .gallery {
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
+      }
+      .happy-hour {
+        padding-left: max(2rem, env(safe-area-inset-left));
+        padding-right: max(2rem, env(safe-area-inset-right));
+      }
+    }
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-img-accent { display: none; }
+      .about-img-main { height: min(380px, 62vw); }
+      .location-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+      .gallery-item:nth-child(5) { grid-column: span 2; }
+      /* Symmetrical finish: full-width cap so the last image is not a lone half tile */
+      .gallery-item:nth-child(8) { grid-column: 1 / -1; }
+      .hh-grid { grid-template-columns: 1fr; }
+      .menu-tabs {
+        flex-wrap: nowrap;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: max(0px, env(safe-area-inset-left)) max(0px, env(safe-area-inset-right));
+        box-shadow: inset 0 -6px 8px -8px rgba(0, 0, 0, 0.08);
+      }
+      .menu-tabs-wrap::before,
+      .menu-tabs-wrap::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2.25rem;
+        max-width: 18%;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.22s ease;
+      }
+      .menu-tabs-wrap::before {
+        left: 0;
+        background: linear-gradient(to right, var(--color-surface) 0%, rgba(255, 255, 255, 0) 100%);
+      }
+      .menu-tabs-wrap::after {
+        right: 0;
+        background: linear-gradient(to left, var(--color-surface) 0%, rgba(255, 255, 255, 0) 100%);
+      }
+      .menu-tabs-wrap.menu-tabs-wrap--fade-left::before { opacity: 1; }
+      .menu-tabs-wrap.menu-tabs-wrap--fade-right::after { opacity: 1; }
+    }
+    @media (max-width: 768px) {
+      html { scroll-padding-top: 76px; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-inner { height: 64px; }
+      .hero { padding-top: 64px; }
+      .section { padding-top: 4rem; padding-bottom: 4rem; }
+      .gallery { padding-top: 4rem; padding-bottom: 4rem; }
+      .happy-hour { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+      .menu-items { grid-template-columns: 1fr; }
+      .about-stats { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      .stat-num { font-size: 1.85rem; }
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+      .location-map iframe { height: 260px; }
+      .hours-table td { font-size: 0.85rem; padding: 0.7rem 0; }
+      .btn-primary, .btn-outline {
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding-left: 1.75rem;
+        padding-right: 1.75rem;
+      }
+      .hero-actions { flex-direction: column; width: 100%; max-width: 320px; margin-left: auto; margin-right: auto; }
+      .hero-actions a { width: 100%; box-sizing: border-box; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .happy-hour .section-title { font-size: clamp(1.75rem, 9vw, 2.75rem); }
+      .hh-time { letter-spacing: 0.12em; font-size: 0.68rem; padding-left: 0.75rem; padding-right: 0.75rem; }
+      .hero-title { font-size: clamp(2.25rem, 11vw, 3rem); }
+      .hero-tagline { font-size: 0.95rem; }
+      .hero-scroll { bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(2),
+      .gallery-item:nth-child(3),
+      .gallery-item:nth-child(4),
+      .gallery-item:nth-child(5),
+      .gallery-item:nth-child(6),
+      .gallery-item:nth-child(7),
+      .gallery-item:nth-child(8) {
+        grid-column: auto;
+        grid-row: auto;
+      }
+      .about-stats { grid-template-columns: repeat(2, 1fr); }
+      .stat-label { font-size: 0.68rem; }
+      .menu-tab { padding: 0.85rem 1.1rem; font-size: 0.68rem; letter-spacing: 0.12em; }
+      .menu-item-name { font-size: 0.95rem; }
+      .menu-item-desc { font-size: 0.78rem; }
+      .footer-social a { width: 44px; height: 44px; }
+    }
+    @media (max-width: 380px) {
+      .hours-table td { font-size: 0.8rem; }
+      .hours-table td:last-child { text-align: left; padding-top: 0; }
+      .hours-table tr { display: grid; grid-template-columns: 1fr; gap: 0.15rem; padding: 0.65rem 0; }
+      .hours-table td { padding: 0; border: none; }
+    }
+    @media (max-width: 420px) {
+      .menu-item {
+        grid-template-columns: 1fr;
+      }
+      .menu-item-info {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      .menu-item-price {
+        grid-column: 1;
+        grid-row: 2;
+        margin-top: 0.15rem;
+        text-align: left;
+        white-space: normal;
+        padding-inline-end: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-name">Taproot</span>
+      <span class="nav-logo-sub">Café & Bar · Est. 2012</span>
+    </a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#menu">Menu</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#happy-hour">Happy Hour</a>
+      <a href="#location">Hours</a>
+      <a href="tel:2064202535" class="nav-cta">Reserve a Table</a>
+    </div>
+    <button type="button" class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site navigation" hidden>
+  <a href="#about" onclick="toggleMenu()">About</a>
+  <a href="#menu" onclick="toggleMenu()">Menu</a>
+  <a href="#gallery" onclick="toggleMenu()">Gallery</a>
+  <a href="#happy-hour" onclick="toggleMenu()">Happy Hour</a>
+  <a href="#location" onclick="toggleMenu()">Hours & Location</a>
+  <a href="tel:2064202535" onclick="toggleMenu()" class="mobile-menu-cta">Reserve a table</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375560407-TB0BAFK1VD47O404VPLQ/IMG_0750.jpeg')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809625139-6JJILUZ4JBS3UDBUW6YZ/IMG_0235.jpeg')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1525382290376-KUYAEJUGMY09EK2ZUI4M/tr-sandwich.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375572882-BE8YZ5OHP7H56XHXVOSC/IMG_1014.jpeg')"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Columbia City · Seattle · Est. 2012</p>
+    <h1 class="hero-title">Where Columbia<br>City <em>Gathers</em></h1>
+    <p class="hero-tagline">Seasonal Pacific Northwest cuisine, craft cocktails, and a neighborhood spirit — rooted in community since 2012.</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">View Our Menu</a>
+      <a href="#location" class="btn-outline">Hours & Location</a>
+    </div>
+  </div>
+  <div class="hero-scroll" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809626208-57IGF8KPL9JYJ8TLQZBA/9440448E-906A-495F-AA4E-D271DBD83D91.jpeg"
+             alt="Taproot Café interior" class="about-img-main">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1525382287471-60KTO879LEDQ6YN74470/tr-cobb.jpeg"
+             alt="Taproot dish" class="about-img-accent">
+      </div>
+      <div class="about-text">
+        <p class="section-label">Our Story</p>
+        <h2 class="section-title">Rooted in the <em>Heart</em> of Columbia City</h2>
+        <div class="section-divider"></div>
+        <p>Established in July 2012, Taproot Café & Bar is owner-operated and proudly located in the heart of Downtown Columbia City. We showcase the very best the Pacific Northwest has to offer — from seasonal ingredients sourced close to home, to craft cocktails that celebrate local flavors.</p>
+        <p>What makes us unique is our ever-changing menu — crafted from beginning to end by our passionate team, focusing on incredible flavors and the nourishing aspects quality food provides. The local art on our walls ties the threads of the neighborhood together, making Taproot a true community gathering place.</p>
+        <p>Whether you're joining us for a hearty sandwich, a stellar salad, a fresh juice, or our most classy cocktails in Columbia City — there's always a place for you at Taproot.</p>
+        <div class="about-stats">
+          <div>
+            <div class="stat-num">4.6★</div>
+            <div class="stat-label">Google Rating</div>
+          </div>
+          <div>
+            <div class="stat-num">13+</div>
+            <div class="stat-label">Years in Columbia City</div>
+          </div>
+          <div>
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Owner Operated</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="section menu" id="menu">
+  <div class="section-inner">
+    <p class="section-label">What We Serve</p>
+    <h2 class="section-title">A Menu Built on the <em>Pacific Northwest</em></h2>
+    <div class="section-divider"></div>
+    <p style="color:var(--color-muted);margin-bottom:2.5rem;font-size:0.95rem;max-width:600px;">Our menu changes with the seasons. What follows reflects our current offerings — ask your server about today's specials.</p>
+
+    <div class="menu-tabs-wrap" id="menuTabsWrap">
+      <div class="menu-tabs" id="menuTabs" role="tablist" aria-label="Menu categories" title="Scroll sideways to see every category">
+        <button type="button" class="menu-tab active" onclick="switchTab('lunch', this)">Lunch</button>
+        <button type="button" class="menu-tab" onclick="switchTab('dinner', this)">Dinner Entrees</button>
+        <button type="button" class="menu-tab" onclick="switchTab('cocktails', this)">Cocktails</button>
+        <button type="button" class="menu-tab" onclick="switchTab('juices', this)">Juices & Smoothies</button>
+        <button type="button" class="menu-tab" onclick="switchTab('beverages', this)">Coffee & NA Drinks</button>
+      </div>
+    </div>
+
+    <!-- LUNCH -->
+    <div class="menu-panel active" id="tab-lunch">
+      <div class="menu-section">
+        <div class="menu-section-title">Appetizers</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Cheesy Roasted Garlic Ciabatta</div>
+              <div class="menu-item-desc">Melted Provolone · Parmesan · Chili Flake</div>
+            </div>
+            <div class="menu-item-price">$8</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Pan Roasted Veggies</div>
+              <div class="menu-item-desc">Cauliflower · Broccoli · Romesco · Toasted Garlic · Smoked Almonds · Dill</div>
+            </div>
+            <div class="menu-item-price">$16</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Warm Brie & Crackers</div>
+              <div class="menu-item-desc">Olive Oil Crostini · Sliced Apples · Taproot Nut Mix · Honey Drizzle</div>
+            </div>
+            <div class="menu-item-price">$14.5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Yellow Curry Coconut-Carrot Soup</div>
+              <div class="menu-item-desc">Smoked Paprika Oil · Sunflower Seeds · Buttermilk Roll</div>
+            </div>
+            <div class="menu-item-price">$14</div>
+          </div>
+        </div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-section-title">Salads</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Wild Arugula</div>
+              <div class="menu-item-desc">Apples · Oranges · Pickled Red Onion · Sunflower Seeds · White Balsamic Vinaigrette</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Kale Caesar</div>
+              <div class="menu-item-desc">Kale · Croutons · Shredded Parm · Lemon-Anchovy Dressing</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Butter Lettuce & Radicchio</div>
+              <div class="menu-item-desc">Cara Cara Oranges · Roasted Cashews · Toasted Coriander Dressing · Goat Cheese</div>
+            </div>
+            <div class="menu-item-price">$16</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Curry Chicken</div>
+              <div class="menu-item-desc">Romaine Hearts · Apple · Carrot · Celery · Chickpeas · Madras Curry Vinaigrette</div>
+            </div>
+            <div class="menu-item-price">$17</div>
+          </div>
+        </div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-section-title">Sandwiches — All served with Tim's Chips</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Coffee Crusted Strip Steak*</div>
+              <div class="menu-item-desc">Pickled Pepper Relish · Old Bay Aioli · Avocado · Ciabatta · Arugula</div>
+            </div>
+            <div class="menu-item-price">$20</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Blackened Shrimp Sandwich</div>
+              <div class="menu-item-desc">Lettuce · Tomato · Pickle · Tartar Sauce · Potato Bun</div>
+            </div>
+            <div class="menu-item-price">$19</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Chicken Club</div>
+              <div class="menu-item-desc">Roasted Chicken Breast · Provolone · Avocado · Dried Tomato Mayo · Bacon · Baby Arugula</div>
+            </div>
+            <div class="menu-item-price">$17</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Roasted Mushroom Sandwich</div>
+              <div class="menu-item-desc">Melted Provolone · Truffle Aioli · Tomato · Baby Arugula · Potato Bun</div>
+            </div>
+            <div class="menu-item-price">$18</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">The Spicy Italian</div>
+              <div class="menu-item-desc">Prosciutto · Salami · Pepperoni · Hot Coppa · Mortadella · Provolone · Olive Salad</div>
+            </div>
+            <div class="menu-item-price">$17</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Pastrami on Rye</div>
+              <div class="menu-item-desc">Melted Swiss · Caramelized Onions · Beaver's Sweet-Hot Mustard · Caraway Sauerkraut</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Make You Melt</div>
+              <div class="menu-item-desc">Albacore Tuna Salad · Celery · Apple · Cheddar</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Cuban Tofu Panini</div>
+              <div class="menu-item-desc">Marinated Tofu · Avocado · Coconut Infused Slaw · Chili-Cilantro Mayo</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Bacon, Egg & Cheese</div>
+              <div class="menu-item-desc">Hickory Bacon · Over Easy Egg · Sharp Cheddar · Ciabatta · Add Avocado & Arugula +$3</div>
+            </div>
+            <div class="menu-item-price">$13</div>
+          </div>
+        </div>
+        <p class="menu-note">*Consuming raw or undercooked proteins may increase risk of food-borne illness. GF bread available +$1.</p>
+      </div>
+      <div class="menu-section">
+        <div class="menu-section-title">Dessert</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Banana-Chocolate Bread Pudding</div>
+              <div class="menu-item-desc">Chocolate Sauce · Cinnamon Icing · Banana</div>
+            </div>
+            <div class="menu-item-price">$10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DINNER -->
+    <div class="menu-panel" id="tab-dinner">
+      <div class="menu-section">
+        <div class="menu-section-title">Entrées — Available from 5pm</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Orecchiette Pasta & Asparagus</div>
+              <div class="menu-item-desc">Sherry Cream Sauce · English Peas · Wilted Kale · Parmesan Crisps</div>
+            </div>
+            <div class="menu-item-price">$26</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Bourbon Butter Jumbo Shrimp</div>
+              <div class="menu-item-desc">Garlic · Jalapeños · Cherry Tomato Confit · Chives · Garlic Whipped Potatoes</div>
+            </div>
+            <div class="menu-item-price">$26</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Eggplant Parmesan</div>
+              <div class="menu-item-desc">Mozzarella · Parmesan · Cherry Tomato-Arugula Salad · Tomato Sauce</div>
+            </div>
+            <div class="menu-item-price">$26</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Blackened Salmon Sandwich</div>
+              <div class="menu-item-desc">Lettuce · Tomato · Pickle · Tartar Sauce · Potato Bun</div>
+            </div>
+            <div class="menu-item-price">$23</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Prosciutto & Marinated Olives</div>
+              <div class="menu-item-desc">Baby Arugula · Olive Oil Drizzle · Croutons</div>
+            </div>
+            <div class="menu-item-price">$16.5</div>
+          </div>
+        </div>
+        <p class="menu-note">Full dinner menu also features all lunch sandwiches, salads, and appetizers. Dinner available Thu–Sat from 5pm.</p>
+      </div>
+    </div>
+
+    <!-- COCKTAILS -->
+    <div class="menu-panel" id="tab-cocktails">
+      <div class="menu-section">
+        <div class="menu-section-title">Signature Cocktails</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Midnight Renegade</div>
+              <div class="menu-item-desc">Butterfly Pea Flower Gin · Lime · Jasmine-Green Tea Bitters · Lustau Blanco</div>
+            </div>
+            <div class="menu-item-price">$14</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Señor Moose</div>
+              <div class="menu-item-desc">Mezcal · Lime · Jalapeño · Agave · Grapefruit · Tajín Rim</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Chai Old Fashioned</div>
+              <div class="menu-item-desc">Chai Bourbon · Chai Simple Syrup · Coffee Bitters</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Hemingway's Hibiscus Mistress</div>
+              <div class="menu-item-desc">Hibiscus-Blueberry Rum · Grapefruit · Maraschino · Lime · Simple Syrup</div>
+            </div>
+            <div class="menu-item-price">$14</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Uncle Nonnie's Negroni</div>
+              <div class="menu-item-desc">Gin · Pasubio Amaro · Cappelletti Rosso · Campari</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Blackrose Manhattan</div>
+              <div class="menu-item-desc">Four Roses Bourbon · Letterpress Nocino · Lustau Rojo · Scrappy's Orange Bitters</div>
+            </div>
+            <div class="menu-item-price">$15</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Absinthe Minded Afternoon</div>
+              <div class="menu-item-desc">Absinthe Ordinaire · Peychaud's Bitters · Lemon · Sparkling Cava</div>
+            </div>
+            <div class="menu-item-price">$13</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">PNW Mountie</div>
+              <div class="menu-item-desc">Crown Royal Whisky · Fernet Branca · Woodenville Barrel-Aged Maple</div>
+            </div>
+            <div class="menu-item-price">$14</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Mighty PNW Michelada</div>
+              <div class="menu-item-desc">Tajín Chili Rim · Lime · Scratch Mix · Rainier Tall Boy</div>
+            </div>
+            <div class="menu-item-price">$9</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Bloody Mary or Maria</div>
+              <div class="menu-item-desc">Smoked Sea Salt · House Mary Mix</div>
+            </div>
+            <div class="menu-item-price">$13</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Ginger Caipirinha</div>
+              <div class="menu-item-desc">Cachaça · Ginger · Lime</div>
+            </div>
+            <div class="menu-item-price">$13</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">One & Done</div>
+              <div class="menu-item-desc">Cold Rainier Tall Boy + Shot of Well Spirit</div>
+            </div>
+            <div class="menu-item-price">$11</div>
+          </div>
+        </div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-section-title">Draft Beers</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Flying Lion Brewing</div><div class="menu-item-desc">"German" Pilsner</div></div>
+            <div class="menu-item-price">$8</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Seapine</div><div class="menu-item-desc">"Mosaic" Pale Ale</div></div>
+            <div class="menu-item-price">$8</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">E-9 Brewing</div><div class="menu-item-desc">"Rowdy & Dick" Amber</div></div>
+            <div class="menu-item-price">$8</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Maritime</div><div class="menu-item-desc">"Imperial" IPA</div></div>
+            <div class="menu-item-price">$8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JUICES & SMOOTHIES -->
+    <div class="menu-panel" id="tab-juices">
+      <div class="menu-section">
+        <div class="menu-section-title">Fresh Pressed Juices</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Green Gift</div>
+              <div class="menu-item-desc">Kale · Green Apple · Ginger · Parsley</div>
+            </div>
+            <div class="menu-item-price">$8.5 / $10.5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Reboot</div>
+              <div class="menu-item-desc">Apple · Turmeric · Lemon · Carrot · Ginger</div>
+            </div>
+            <div class="menu-item-price">$8.75 / $10.75</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Immunity</div>
+              <div class="menu-item-desc">Honey · Apple · Orange · Lemon · Cayenne · Garlic · Ginger</div>
+            </div>
+            <div class="menu-item-price">$9.5 / $11.5</div>
+          </div>
+        </div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-section-title">Smoothies</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Berry Blast</div>
+              <div class="menu-item-desc">Strawberry · Blueberry · Blackberry · Apple Juice</div>
+            </div>
+            <div class="menu-item-price">$9 / $11</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Tropi-Fusion</div>
+              <div class="menu-item-desc">Banana · Mango · Lime Juice · Mint · OJ</div>
+            </div>
+            <div class="menu-item-price">$9 / $11</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Peanut Butter Cup</div>
+              <div class="menu-item-desc">Banana · Peanut Butter · Chocolate · Milk</div>
+            </div>
+            <div class="menu-item-price">$9 / $11</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Prince Vita</div>
+              <div class="menu-item-desc">Banana · Caramel · Chocolate · Caffè Vita Cold Brew · Milk</div>
+            </div>
+            <div class="menu-item-price">$9.5 / $11.5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Green Smoothness</div>
+              <div class="menu-item-desc">Kale · Banana · Orange · Cucumber · Apple Juice</div>
+            </div>
+            <div class="menu-item-price">$9.5 / $11.5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Awareness</div>
+              <div class="menu-item-desc">Blueberry · Blackberry · Kale · Avocado · Flax · Apple Juice</div>
+            </div>
+            <div class="menu-item-price">$9.5 / $11.5</div>
+          </div>
+        </div>
+        <p class="menu-note">Juices & smoothies available Tue–Sat until 5:45 pm, Sun until 4:45 pm. +$1 for modifications.</p>
+      </div>
+    </div>
+
+    <!-- BEVERAGES -->
+    <div class="menu-panel" id="tab-beverages">
+      <div class="menu-section">
+        <div class="menu-section-title">Non-Alcoholic Signature Drinks</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Lavender Lemonade</div>
+              <div class="menu-item-desc">Lavender-Butterfly Pea Flower Syrup · Scratch Lemonade</div>
+            </div>
+            <div class="menu-item-price">$7</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Elderflower-Rose Spritz</div>
+              <div class="menu-item-desc">Elderflower-Rose Syrup · Lime Juice · Sparkling Water</div>
+            </div>
+            <div class="menu-item-price">$7</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">Mint-Ginger Nojito</div>
+              <div class="menu-item-desc">House Ginger Limeade · Mint · Lime · Sparkling Water</div>
+            </div>
+            <div class="menu-item-price">$9</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info">
+              <div class="menu-item-name">TÖST</div>
+              <div class="menu-item-desc">White Tea · White Cranberry · Ginger · Sparkling (Alcohol-Free)</div>
+            </div>
+            <div class="menu-item-price">$7</div>
+          </div>
+        </div>
+      </div>
+      <div class="menu-section">
+        <div class="menu-section-title">Coffee</div>
+        <div class="menu-items">
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Americano</div></div>
+            <div class="menu-item-price">$4.5 / $5.5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Cold Brew</div></div>
+            <div class="menu-item-price">$4.5 / $5.5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Café Latte</div></div>
+            <div class="menu-item-price">$4.75 / $5.75</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Mocha</div></div>
+            <div class="menu-item-price">$5 / $6</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Cappuccino</div></div>
+            <div class="menu-item-price">$5</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-info"><div class="menu-item-name">Iced Tea</div></div>
+            <div class="menu-item-price">$4.5</div>
+          </div>
+        </div>
+        <p class="menu-note">Coffee service after 4 pm is available to-go only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="section-inner">
+    <p class="section-label">From Our Kitchen & Bar</p>
+    <h2 class="section-title" style="color:#fff;">A Taste of <em>Taproot</em></h2>
+    <div class="section-divider" style="background:linear-gradient(to right,var(--color-gold),transparent)"></div>
+  </div>
+  <div class="section-inner">
+    <div class="gallery-grid">
+      <div class="gallery-item" onclick="openLightbox(0)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809405565-KNV5T0B1C5UVQYVW6BFC/IMG_8070.png" alt="Taproot food">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(1)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809398150-EDSE433S6BZ67GIQJVWA/IMG_8043.jpeg" alt="Taproot dish">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(2)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375557252-4QIYOH4A894JUPBW30R1/IMG_1643.jpeg" alt="Taproot food">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(3)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375566225-ZCSAK7N27DO4BHKR54YQ/IMG_1581.jpeg" alt="Taproot food">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(4)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375563138-UXLEBR909T3C31NHZB3D/IMG_2047.jpeg" alt="Taproot food">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(5)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809627399-KJPEL68HEDBDFA9S70VS/EA52341A-076C-4FEB-8136-D2C77011BCCC.jpeg" alt="Taproot interior">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(6)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375568992-KXFGTY564YX7718RKNDZ/IMG_1805.jpeg" alt="Taproot cocktail">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(7)">
+        <img src="https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1525382287471-60KTO879LEDQ6YN74470/tr-cobb.jpeg" alt="Taproot cobb">
+        <div class="gallery-item-overlay"><span class="gallery-icon">⊕</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lightbox-close" onclick="closeLightbox()">×</span>
+  <span class="lightbox-nav lightbox-prev" onclick="event.stopPropagation();prevPhoto()">&#8249;</span>
+  <img id="lightbox-img" src="" alt="Gallery photo">
+  <span class="lightbox-nav lightbox-next" onclick="event.stopPropagation();nextPhoto()">&#8250;</span>
+</div>
+
+<!-- HAPPY HOUR -->
+<section class="happy-hour" id="happy-hour">
+  <p class="section-label">Every Week</p>
+  <h2 class="section-title">Happy <em>Hour</em></h2>
+  <div class="section-divider"></div>
+  <p style="color:rgba(255,255,255,0.8);max-width:500px;margin:0 auto;font-size:1rem;line-height:1.7;">
+    Join us for daily happy times — great bites, discounted drinks, and the best neighborhood vibes in Columbia City.
+  </p>
+  <div class="hh-grid">
+    <div class="hh-card">
+      <div class="hh-card-title">$5 Bar Snacks</div>
+      <ul class="hh-list">
+        <li>Marinated Olives</li>
+        <li>Taproot Bar Mix</li>
+        <li>Prosciutto &amp; Arugula</li>
+        <li>Happy Times Kale Caesar</li>
+        <li>Cheesy Garlic Ciabatta</li>
+      </ul>
+    </div>
+    <div class="hh-card">
+      <div class="hh-card-title">Discounted Drinks</div>
+      <p class="hh-card-lead">$1 off all Drafts &amp; Wines by the Glass</p>
+      <p class="hh-card-sub">$8 Wells</p>
+      <ul class="hh-list">
+        <li>Four Roses</li>
+        <li>Capitol Vodka</li>
+        <li>Montezuma Silver</li>
+        <li>Jameson</li>
+        <li>Copley Gin</li>
+      </ul>
+    </div>
+    <div class="hh-card">
+      <div class="hh-card-title">Salty Dog</div>
+      <p class="hh-card-text">Our beloved happy hour cocktail special — ask your server for today's Salty Dog creation</p>
+    </div>
+  </div>
+  <div class="hh-time">Tuesday – Sunday · 3:00 – 5:00 pm · Dine-In Only</div>
+</section>
+
+<!-- LOCATION & HOURS -->
+<section class="section location" id="location">
+  <div class="section-inner">
+    <div class="location-grid">
+      <div>
+        <p class="section-label">Find Us</p>
+        <h2 class="section-title">Hours & <em>Location</em></h2>
+        <div class="section-divider"></div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>4908-A Rainier Ave S<br>Columbia City, Seattle, WA 98118</div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <a href="tel:2064202535" style="color:#444;">(206) 420-2535</a>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📸</div>
+          <a href="https://instagram.com/taproot_cafe_bar" target="_blank" style="color:#444;">@taproot_cafe_bar</a>
+        </div>
+
+        <table class="hours-table">
+          <tr>
+            <td>Monday</td>
+            <td class="closed">Closed</td>
+          </tr>
+          <tr>
+            <td>Tuesday – Thursday</td>
+            <td>11 am – 9:30 pm</td>
+          </tr>
+          <tr>
+            <td>Friday & Saturday</td>
+            <td>11 am – 10:30 pm</td>
+          </tr>
+          <tr>
+            <td>Sunday</td>
+            <td>11 am – 8:30 pm</td>
+          </tr>
+        </table>
+        <p style="font-size:0.78rem;color:var(--color-muted);margin-top:1rem;">Juice & smoothies available until 5:45 pm (Tue–Sat), 4:45 pm (Sun). Dinner entrees from 5 pm. Happy Hour: Tue–Sun 3–5 pm.</p>
+
+        <div class="reserve-cta">
+          <p>"The most classy cocktails in Columbia City."</p>
+          <a href="tel:2064202535">Call to Reserve — (206) 420-2535</a>
+        </div>
+      </div>
+      <div>
+        <div class="location-map">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2693.3!2d-122.2896!3d47.5584!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54906a3e5a6c5b27%3A0x8f3a1f3e6e8c4f6a!2s4908+Rainier+Ave+S%2C+Seattle%2C+WA+98118!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div style="margin-top:1.5rem;padding:1.5rem;background:#fff;border:1px solid var(--color-border);border-radius:2px;">
+          <p style="font-family:var(--font-label);font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--color-muted);margin-bottom:1rem;">Getting Here</p>
+          <p style="font-size:0.85rem;color:#555;line-height:1.7;">We're located on Rainier Ave S in the heart of Downtown Columbia City, next to the Columbia City Link light rail station. Street parking available. Dog-friendly patio. Please note: no strollers and children are not permitted in the booths.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">Taproot</div>
+        <div class="footer-brand-sub">Café & Bar · Est. 2012</div>
+        <p class="footer-brand-desc">Owner-operated and community-rooted in Columbia City since 2012. Serving the best of the Pacific Northwest in food, drink, and spirit.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/taproot_cafe_bar" target="_blank" aria-label="Instagram">&#x1F4F7;</a>
+          <a href="https://www.facebook.com/p/Taproot-Cafe-Bar-100063477101258/" target="_blank" aria-label="Facebook">&#x1F4F1;</a>
+          <a href="tel:2064202535" aria-label="Call us">&#x1F4DE;</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Menu</div>
+        <ul class="footer-links">
+          <li><a href="#menu">Lunch</a></li>
+          <li><a href="#menu">Dinner</a></li>
+          <li><a href="#menu">Cocktails</a></li>
+          <li><a href="#menu">Juices & Smoothies</a></li>
+          <li><a href="#happy-hour">Happy Hour</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Visit</div>
+        <ul class="footer-links">
+          <li><a href="#about">Our Story</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#location">Hours</a></li>
+          <li><a href="#location">Location</a></li>
+          <li><a href="tel:2064202535">Call Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Taproot Café & Bar · 4908-A Rainier Ave S, Seattle, WA 98118</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Mobile menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    const open = !menu.classList.contains('open');
+    menu.classList.toggle('open', open);
+    document.documentElement.classList.toggle('menu-open', open);
+    document.body.classList.toggle('menu-open', open);
+    menu.toggleAttribute('hidden', !open);
+    if (btn) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+  }
+
+  // Hero slideshow
+  const slides = document.querySelectorAll('.hero-slide');
+  let current = 0;
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 5000);
+
+  // Menu tabs
+  function switchTab(name, btn) {
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    if (window.matchMedia('(max-width: 900px)').matches && typeof btn.scrollIntoView === 'function') {
+      btn.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+    }
+  }
+
+  (function initMenuTabsScrollFades() {
+    const wrap = document.getElementById('menuTabsWrap');
+    const row = document.getElementById('menuTabs');
+    if (!wrap || !row) return;
+    const mq = window.matchMedia('(max-width: 900px)');
+    function updateMenuTabFades() {
+      if (!mq.matches) {
+        wrap.classList.remove('menu-tabs-wrap--fade-left', 'menu-tabs-wrap--fade-right');
+        return;
+      }
+      const maxScroll = row.scrollWidth - row.clientWidth;
+      const eps = 2;
+      if (maxScroll <= eps) {
+        wrap.classList.remove('menu-tabs-wrap--fade-left', 'menu-tabs-wrap--fade-right');
+        return;
+      }
+      wrap.classList.toggle('menu-tabs-wrap--fade-left', row.scrollLeft > eps);
+      wrap.classList.toggle('menu-tabs-wrap--fade-right', row.scrollLeft < maxScroll - eps);
+    }
+    row.addEventListener('scroll', updateMenuTabFades, { passive: true });
+    window.addEventListener('resize', updateMenuTabFades);
+    mq.addEventListener('change', updateMenuTabFades);
+    if (typeof ResizeObserver !== 'undefined') new ResizeObserver(updateMenuTabFades).observe(row);
+    updateMenuTabFades();
+  })();
+
+  // Lightbox
+  const galleryPhotos = [
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809405565-KNV5T0B1C5UVQYVW6BFC/IMG_8070.png',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809398150-EDSE433S6BZ67GIQJVWA/IMG_8043.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375557252-4QIYOH4A894JUPBW30R1/IMG_1643.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375566225-ZCSAK7N27DO4BHKR54YQ/IMG_1581.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375563138-UXLEBR909T3C31NHZB3D/IMG_2047.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1696809627399-KJPEL68HEDBDFA9S70VS/EA52341A-076C-4FEB-8136-D2C77011BCCC.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1767375568992-KXFGTY564YX7718RKNDZ/IMG_1805.jpeg',
+    'https://images.squarespace-cdn.com/content/v1/5ad143a925bf027070309fa5/1525382287471-60KTO879LEDQ6YN74470/tr-cobb.jpeg'
+  ];
+  let lbIdx = 0;
+
+  function openLightbox(idx) {
+    lbIdx = idx;
+    document.getElementById('lightbox-img').src = galleryPhotos[idx];
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(e) {
+    if (!e || e.target === document.getElementById('lightbox') || e.target.classList.contains('lightbox-close')) {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  function prevPhoto() {
+    lbIdx = (lbIdx - 1 + galleryPhotos.length) % galleryPhotos.length;
+    document.getElementById('lightbox-img').src = galleryPhotos[lbIdx];
+  }
+  function nextPhoto() {
+    lbIdx = (lbIdx + 1) % galleryPhotos.length;
+    document.getElementById('lightbox-img').src = galleryPhotos[lbIdx];
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const lb = document.getElementById('lightbox');
+      if (lb.classList.contains('open')) {
+        closeLightbox({ target: lb });
+        return;
+      }
+      const menu = document.getElementById('mobileMenu');
+      if (menu.classList.contains('open')) toggleMenu();
+      return;
+    }
+    if (e.key === 'ArrowLeft') prevPhoto();
+    if (e.key === 'ArrowRight') nextPhoto();
+  });
+</script>
+</body>
+</html>
