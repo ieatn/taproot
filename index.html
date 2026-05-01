@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/chatbot/chatbot.css">
   <style>
     :root {
       --color-bg:       #0c0c0c;
@@ -27,6 +28,21 @@
       --shadow-md:      0 8px 32px rgba(0,0,0,0.12);
       --shadow-lg:      0 20px 60px rgba(0,0,0,0.18);
       --max-w:          1200px;
+      --chatbot-radius: 14px;
+      --chatbot-shadow: 0 22px 55px rgba(12, 12, 12, 0.2);
+      --chatbot-surface: #f7f4f0;
+      --chatbot-surface-elevated: #ffffff;
+      --chatbot-accent: #8b1a1a;
+      --chatbot-accent-hover: #c0392b;
+      --chatbot-on-accent: #ffffff;
+      --chatbot-text: #1a1a1a;
+      --chatbot-muted: #666666;
+      --chatbot-border: rgba(26, 26, 26, 0.12);
+      --chatbot-bot-bg: #f0ebe4;
+      --chatbot-user-bg: #8b1a1a;
+      --chatbot-user-text: #ffffff;
+      --chatbot-input-bg: #ffffff;
+      --chatbot-fab-size: 56px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1926,5 +1942,7 @@
     if (e.key === 'ArrowRight') nextPhoto();
   });
 </script>
+<script type="application/json" id="chatbot-site-config">{"siteId":"taproot","labels":{"title":"Taproot Café & Bar","kicker":"Columbia City","opener":"Hi — ask about all-day café fare, drinks, or planning a visit."}}</script>
+<script type="module" src="/chatbot/chatbot.js"></script>
 </body>
 </html>
