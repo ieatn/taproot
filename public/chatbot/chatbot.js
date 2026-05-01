@@ -106,13 +106,18 @@ function mount() {
 
   let open = false;
 
+  function mobileSheetMq() {
+    return typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 639px)').matches;
+  }
+
   function setOpen(v) {
     open = v;
     panel.classList.toggle('open', open);
     fab.style.visibility = open ? 'hidden' : 'visible';
     fab.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panel.setAttribute('aria-modal', open ? 'true' : 'false');
+    document.body.classList.toggle('site-chatbot-scroll-lock', open && mobileSheetMq());
     if (open) {
-      panel.classList.remove('no-fab-offset');
       input.focus();
     } else {
       fab.focus();
@@ -121,6 +126,14 @@ function mount() {
 
   fab.addEventListener('click', () => setOpen(true));
   closeBtn.addEventListener('click', () => setOpen(false));
+
+  window.addEventListener('resize', () => {
+    if (!open) {
+      document.body.classList.remove('site-chatbot-scroll-lock');
+      return;
+    }
+    document.body.classList.toggle('site-chatbot-scroll-lock', mobileSheetMq());
+  });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && open) setOpen(false);
